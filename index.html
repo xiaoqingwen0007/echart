@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/animate.css"/>
+	<script type="text/javascript" src="js/jquery-1.8.2.min.js" ></script>
+	<script type="text/javascript" src="Echarts/echarts.js" ></script>
+	<style>
+		#Qushi_box{
+			height:inherit;
+			width:inherit;
+		}
+		.table_Qushi{
+			border:1px solid #ccc;
+		}
+		.table_Qushi tr{
+			transition:all .2s;
+		}
+		.table_Qushi tr:nth-child(odd){
+			background:#eee;
+		}
+		.table_Qushi tr:hover{
+			background:#eee;
+		}
+		.table_Qushi tr td{
+			padding:0.05rem 0;
+		}
+	</style>
+</head>
+<body>
+<div class="warp_box animated fadeInRight">
+	<div id="qushi_example_chart">
+		
+	</div>
+</div>
+</body>
+</html>
+<script>
+	// 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('qushi_example_chart'));
+	option = {
+	    tooltip : {
+	        trigger: 'axis'
+	    },
+	    color:[ '#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed' ],			//设置折线图的颜色，当系列数量个数比颜色列表长度大时将循环选取
+	    legend: {
+	    	orient: 'horizontal',
+	    	show:true,
+	    	x:"center",					//定义导航的x坐标"left""center","right"
+	    	y:"top",					//定义导航条y坐标
+	    	//自定义设置导航
+	        data:[{name:'邮件营销',icon:"image://img/icon.png",textStyle:{fontWeight:'bold', color:'green'}},'联盟广告','视频广告','直接访问','搜索引擎'],
+	        selected:{'邮件营销':true,'联盟广告':false,'视频广告':false,'直接访问':false,'搜索引擎':false},	//设置需要显示的数据
+	        textStyle: {color: 'blue'},				//设置字体颜色默认黑色
+	        borderColor: 'rgba(178,34,34,0.8)', 	//设置边框
+	        borderWidth: 1,							//设置边框的宽度
+	        padding: 10								//设置内容到边框的距离
+	    },
+	    toolbox: {
+	        show : true,
+	        orient: 'vertical',      // 布局方式，默认为水平布局，可选为：'horizontal' ¦ 'vertical'
+	        right:"30px",		   //也可以用right来进行定位
+	       	/*x:"right",	*/			   // 水平安放位置，默认为全图右对齐，可选为： 'center' ¦ 'left' ¦ 'right'¦ {number}（x坐标，单位px）
+	        y: 'top',                  // 垂直安放位置，默认为全图顶端，可选为：'top' ¦ 'bottom' ¦ 'center'¦ {number}（y坐标，单位px）
+	        color : ['#1e90ff','#22bb22','#4b0082','#d2691e'],
+	        backgroundColor: 'rgba(0,0,0,0)', // 工具箱背景颜色
+	        borderColor: '#ccc',       // 工具箱边框颜色
+	        borderWidth: 1,            // 工具箱边框线宽，单位px，默认为0（无边框）
+	        padding: 5,                // 工具箱内边距，单位px，默认各方向内边距为5，
+	        showTitle: true,
+	        feature : {
+	            dataView : {
+	                show : true,
+	                title : '数据视图',
+	                readOnly: true,				//设置是否存在刷新按钮"true"不存在，false存在
+	                lang : ['数据视图', '关闭', '刷新'],
+	                //修改数据视图
+	                optionToContent: function(opt) {
+	                    var axisData = opt.xAxis[0].data;
+					    var series = opt.series;
+					    var table = '<table style="width:100%;text-align:center" cellspacing="0" cellpadding="0" class="table_Qushi"><tbody><tr>'
+					                 + '<td>时间</td>'
+					                 //类别
+					                 + '<td>' + series[0].name + '</td>'
+					                 + '<td>' + series[1].name + '</td>'
+					                 + '<td>' + series[2].name + '</td>'
+					                 + '<td>' + series[3].name + '</td>'
+					                 + '<td>' + series[4].name + '</td>'
+					                 + '</tr>';
+						    for (var i = 0, l = axisData.length; i < l; i++) {
+						        table += '<tr>'
+						                 + '<td>' + axisData[i] + '</td>'
+						                 //不同的类别对应的数据
+						                 + '<td>' + series[0].data[i] + '</td>'
+						                 + '<td>' + series[1].data[i] + '</td>'
+						                 + '<td>' + series[2].data[i] + '</td>'
+						                 + '<td>' + series[3].data[i] + '</td>'
+						                 + '<td>' + series[4].data[i] + '</td>'
+						                 + '</tr>';
+						    }
+						    table += '</tbody></table>';
+						    return table;
+	                }
+	            },
+	            magicType: {
+	                show : true,
+	                title : {
+	                    line : '动态类型切换-折线图',
+	                    bar : '动态类型切换-柱形图',
+	                    stack : '动态类型切换-堆积',
+	                    tiled : '动态类型切换-平铺'
+	                },
+	                type : ['line', 'bar', 'stack', 'tiled']
+	            },
+	            restore : {
+	                show : true,
+	                title : '还原',
+	                color : 'black'
+	            },
+	            saveAsImage : {
+	                show : true,
+	                title : '保存为图片',
+	                type : 'jpeg',
+	                lang : ['点击本地保存'] 
+	            },
+	            //自定义扩展方法
+	            myTool : {
+	                show : true,
+	                title : '自定义扩展方法',
+	                icon : 'image://img/icon.png',
+	                onclick : function (){
+	                    alert('myToolHandler')
+	                }
+	            }
+	        }
+	    },
+	    calculable : true,
+	    xAxis : [
+	        {
+	            type : 'category',
+	            boundaryGap : false,
+	            data : ['周一','周二','周三','周四','周五','周六','周日']
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value'
+	        }
+	    ],
+	    series : [
+	        {
+	            name:'邮件营销',
+	            type:'line',							
+	            stack: '总量',
+	            data:[120, 132, 101, 134, 90, 230, 210]
+	        },
+	        {
+	            name:'联盟广告',
+	            type:'line',
+	            stack: '总量',
+	            data:[220, 182, 191, 234, 290, 330, 310]
+	        },
+	        {
+	            name:'视频广告',
+	            type:'line',
+	            stack: '总量',
+	            data:[150, 232, 201, 154, 190, 330, 410]
+	        },
+	        {
+	            name:'直接访问',
+	            type:'line',
+	            stack: '总量',
+	            data:[320, 332, 301, 334, 390, 330, 320]
+	        },
+	        {
+	            name:'搜索引擎',
+	            type:'line',
+	            stack: '总量',
+	            data:[820, 932, 901, 934, 1290, 1330, 1320]
+	        }
+	    ],
+	    //无数据时显示暂无数据
+	    noDataLoadingOption: {
+            text: '暂无数据',
+            effect: 'bubble',
+            effectOption: {
+                effect: {
+                    n: 0
+                }
+            }
+ 		},
+	};
+
+myChart.setOption(option);
+$(window).resize(function(){
+	myChart.resize()			//图表虽窗口变化变化
+})
+</script>
